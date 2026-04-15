@@ -317,31 +317,6 @@ POST http://localhost:8000/predict
 
 ---
 
-## Common Issues
-
-| Error | Cause | Fix |
-|---|---|---|
-| `WinError 2` on Spark start | Wrong `SPARK_HOME` or `JAVA_HOME` | Set `SPARK_HOME=C:\tools\spark`, use short path for `JAVA_HOME` |
-| `UnsatisfiedLinkError: NativeIO$Windows` | Wrong or missing `winutils.exe` / `hadoop.dll` | Download hadoop-3.3.6 versions, copy `hadoop.dll` to `C:\Windows\System32` |
-| `ModuleNotFoundError: model` | Running uvicorn from wrong directory | Add `sys.path.insert(0, os.path.dirname(__file__))` to `api.py` |
-| Kafka `Connection refused` | Broker not running | Start ZooKeeper first, then broker |
-| Airflow `command not found` | `~/.local/bin` not in PATH | Run `echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc && source ~/.bashrc` |
-| Empty Spark batches | Producer not running | Start `kafka/producer.py` in a separate window |
-
----
-
-## Resume / Interview Summary
-
-**Problem solved:** Automated detection of anomalous behaviour in industrial sensor streams without requiring manually labelled training data.
-
-**How it works:** An LSTM Autoencoder is trained exclusively on normal sensor readings. Because it has never seen anomalous patterns, its reconstruction error spikes when anomalies appear — that spike is the detection signal. The 95th-percentile error threshold is used to flag the top 5% most unusual sequences.
-
-**Why unsupervised?** In real production systems, labelled anomaly data is rare and expensive. Unsupervised detection generalises to new failure modes the system has never encountered.
-
-**Scale:** Kafka + Spark means the architecture can handle millions of events per second by adding more brokers and executors — the ML logic doesn't change.
-
----
-
 ## License
 
 MIT
